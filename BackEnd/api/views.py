@@ -14,12 +14,12 @@ def obter_osso(request):
 
         serializer = OssoSerializer(osso)
         
-        return Response(serializer.data)
+        return Response(serializer.data, status=200)
     
     else:
         return Response(serializer.errors ,{
             "Osso não encontrado..."
-        }, status=400)
+        }, status=404)
     
 @api_view(['POST'])
 def criar_osso(request):
@@ -34,13 +34,13 @@ def criar_osso(request):
         return Response(serializer.data, status=200)
     
     else:
-        return Response(serializer.errors, status=400)
+        return Response(serializer.errors, status=404)
     
 @api_view(['DELETE'])
 def deletar_osso(request,pk):
     
     try:
-
+        
         osso = Osso.objects.get(pk=pk)
 
         osso.delete()
@@ -49,7 +49,7 @@ def deletar_osso(request,pk):
     
     except Osso.DoesNotExist:
 
-        return Response({"mensagem" : "Osso não encontrado no banco de dados!"}, status=400)
+        return Response({"mensagem" : "Osso não encontrado no banco de dados!"}, status=404)
     
 @api_view(['PUT'])
 def atualizar_osso(request,pk):
@@ -68,7 +68,7 @@ def atualizar_osso(request,pk):
 
     except Osso.DoesNotExist:
 
-        return Response({"mensagem" : "Osso não encontrado no banco de dados!"}, status=400)
+        return Response({"mensagem" : "Osso não encontrado no banco de dados!"}, status=404)
     
 @api_view(['GET'])
 def obter_todos(request):
@@ -77,3 +77,23 @@ def obter_todos(request):
         serializer = OssoSerializer(osso, many=True)
         
         return Response(serializer.data)
+
+
+@api_view(['POST'])
+def procurar_osso(request):
+
+    nome = request.data.get("nome");
+
+    if not nome:
+        
+        return Response({"erro": "Por favor, forneça um nome para busca."}, status=400)
+        
+    try:
+        
+        osso = Osso.objects.get(nome__iexact=nome);
+        serializer = OssoSerializer(osso);
+        return Response(serializer.data, status=200);
+
+    except Osso.DoesNotExist:
+
+        return Response({"Erro": "Esse osso não existe no banco de Dados!"}, status=404);

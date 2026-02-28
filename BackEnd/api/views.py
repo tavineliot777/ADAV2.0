@@ -31,10 +31,10 @@ def criar_osso(request):
     if serializer.is_valid():
         serializer.save()
 
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=201)
     
     else:
-        return Response(serializer.errors, status=404)
+        return Response(serializer.errors, status=400)
     
 @api_view(['DELETE'])
 def deletar_osso(request,pk):
@@ -76,7 +76,7 @@ def obter_todos(request):
         osso = Osso.objects.all();
         serializer = OssoSerializer(osso, many=True)
         
-        return Response(serializer.data)
+        return Response(serializer.data, status=200)
 
 
 @api_view(['POST'])

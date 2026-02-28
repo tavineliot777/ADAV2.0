@@ -46,14 +46,12 @@ class OssoBuscaTeste(APITestCase):
     def test_osso_Listar_Todos(self):
 
         response = self.client.get("/api/osso/listar_todos/")
-        self.assertEqual(response.status_code)
-
-
-
+        self.assertEqual(response.status_code, 200)
+        print("Teste de listar_Todos status=200 passou!");
 
     def test_osso_Atualizar(self):
         
-        dados = {"nome" : "femur2", "descricao": "descrição2..."}
+        dados = {"nome" : "femurNovo", "descricao": "descrição2..."}
         response = self.client.put(f'/api/osso/atualizar/{self.osso.id}/' , data=dados, format="json")
 
         self.assertEqual(response.status_code, 200)
@@ -61,7 +59,7 @@ class OssoBuscaTeste(APITestCase):
     
     def test_osso_AtualizarExcept(self):
 
-        dados = {"nome" : "femur2", "descricao" : "descrição2..."}
+        dados = {"nome" : "femurNovo", "descricao" : "descrição2..."}
         id = 100
         response = self.client.put(f"/api/osso/atualizar/{id}/",data=dados, format="json")
 
@@ -83,6 +81,11 @@ class OssoBuscaTeste(APITestCase):
     def test_criar_osso(self):
         dados = {"nome" : "qualquerNome", "descricao" : "seila..."}
         response = self.client.post("/api/osso/criar/", data=dados, format="json")
-        self.assertEqual(response.status_code, 200)
-        print("Teste de criar_osso status=200 passou!");
+        self.assertEqual(response.status_code, 201)
+        print("Teste de criar_osso status=201 passou!");
     
+    def test_criar_ossoExcept(self):
+        dados = {"nome" : "femur2", "descricao" : "seila..."}
+        response = self.client.post("/api/osso/criar/", data=dados, format="json")
+        self.assertEqual(response.status_code, 400)
+        print("Teste de criar_ossoExcept status=400 passou!")
